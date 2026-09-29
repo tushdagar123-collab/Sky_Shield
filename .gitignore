@@ -27,3 +27,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Third-party static assets (D3.js, TopoJSON, GeoJSON map data)
+static/js/d3.min.js
+static/js/topojson.min.js
+static/data/
