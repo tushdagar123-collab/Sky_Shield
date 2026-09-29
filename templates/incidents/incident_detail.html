@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ incident.title }} | SkyShield{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div style="margin-bottom: 0.5rem;">
+      <a href="{% url 'incident_list' %}" class="btn btn-secondary btn-sm">
+        &larr; Back to Incidents
+      </a>
+    </div>
+    <h1 class="page-title">{{ incident.title }}</h1>
+    <p class="page-subtitle">Incident Reference #SKYS-{{ incident.id|stringformat:"04d" }}</p>
+  </div>
+  <div style="display: flex; gap: 0.5rem; align-items: center;">
+    <span class="badge badge-{{ incident.severity }}" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+      {{ incident.get_severity_display }} Severity
+    </span>
+    <span class="badge badge-status badge-status-{{ incident.status }}" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+      {{ incident.get_status_display }}
+    </span>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <!-- Main Incident Narrative -->
+  <div>
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-header">
+        <strong>Incident Narrative & Description</strong>
+        <span class="badge badge-status">{{ incident.get_category_display }}</span>
+      </div>
+      <div class="card-body">
+        <h4 style="font-size: 0.95rem; color: #64748b; margin-bottom: 0.5rem;">Detailed Event Description:</h4>
+        <div class="narrative-box">
+          {{ incident.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incident Details Sidebar -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <strong>Flight & Incident Details</strong>
+      </div>
+      <div class="card-body">
+        <ul class="meta-list">
+          <li class="meta-item">
+            <span class="meta-label">Aircraft Type</span>
+            <span class="meta-value">{{ incident.aircraft_type }}</span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Location / Waypoint</span>
+            <span class="meta-value">{{ incident.location }}</span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Category</span>
+            <span class="meta-value">{{ incident.get_category_display }}</span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Incident Occurrence</span>
+            <span class="meta-value">{{ incident.date_time|date:"M d, Y H:i" }} UTC</span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Severity Level</span>
+            <span class="meta-value">
+              <span class="badge badge-{{ incident.severity }}">{{ incident.get_severity_display }}</span>
+            </span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Investigation Status</span>
+            <span class="meta-value">
+              <span class="badge badge-status badge-status-{{ incident.status }}">{{ incident.get_status_display }}</span>
+            </span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Reported By</span>
+            <span class="meta-value">{{ incident.reported_by.username }}</span>
+          </li>
+          <li class="meta-item">
+            <span class="meta-label">Report Created</span>
+            <span class="meta-value">{{ incident.created_at|date:"M d, Y H:i" }}</span>
+          </li>
+        </ul>
+
+        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="{% url 'incident_create' %}" class="btn btn-primary" style="width: 100%;">
+            Report Another Incident
+          </a>
+          <a href="{% url 'incident_list' %}" class="btn btn-secondary" style="width: 100%;">
+            Return to Registry
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

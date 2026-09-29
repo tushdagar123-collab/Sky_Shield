@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Incident Registry | SkyShield{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Aviation Incident Registry</h1>
+    <p class="page-subtitle">Track, investigate, and review flight safety reports across all operations.</p>
+  </div>
+  <div>
+    <a href="{% url 'incident_create' %}" class="btn btn-primary">
+      <span>+</span> Report Incident
+    </a>
+  </div>
+</div>
+
+<!-- Key Performance & Safety Metrics -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Logged Incidents</div>
+    <div class="stat-value">{{ total_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Active / Under Investigation</div>
+    <div class="stat-value active">{{ active_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Critical Severity</div>
+    <div class="stat-value critical">{{ critical_count }}</div>
+  </div>
+</div>
+
+<!-- Search & Filtering Toolbar -->
+<div class="toolbar-card">
+  <form method="get" class="filter-form">
+    <div>
+      <input 
+        type="text" 
+        name="q" 
+        value="{{ search_query }}" 
+        class="form-control" 
+        placeholder="Search title, location, aircraft..."
+      >
+    </div>
+    <div>
+      <select name="category" class="form-select">
+        <option value="">All Categories</option>
+        {% for cat_val, cat_label in categories %}
+          <option value="{{ cat_val }}" {% if category_filter == cat_val %}selected{% endif %}>{{ cat_label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <select name="severity" class="form-select">
+        <option value="">All Severities</option>
+        {% for sev_val, sev_label in severities %}
+          <option value="{{ sev_val }}" {% if severity_filter == sev_val %}selected{% endif %}>{{ sev_label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <select name="status" class="form-select">
+        <option value="">All Statuses</option>
+        {% for stat_val, stat_label in statuses %}
+          <option value="{{ stat_val }}" {% if status_filter == stat_val %}selected{% endif %}>{{ stat_label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </div>
+    {% if search_query or category_filter or severity_filter or status_filter %}
+      <div>
+        <a href="{% url 'incident_list' %}" class="btn btn-secondary btn-sm">Clear</a>
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Incidents Listing Table -->
+<div class="card">
+  <div class="card-header">
+    <strong>Showing {{ incidents|length }} Incident{% if incidents|length != 1 %}s{% endif %}</strong>
+    {% if search_query or category_filter or severity_filter or status_filter %}
+      <span style="font-size: 0.85rem; color: #64748b;">(Filtered results)</span>
+    {% endif %}
+  </div>
+
+  {% if incidents %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Incident Title & Location</th>
+            <th>Aircraft</th>
+            <th>Category</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Date / Time</th>
+            <th>Reported By</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inc in incidents %}
+            <tr>
+              <td>
+                <a href="{% url 'incident_detail' inc.pk %}" class="incident-title-link">
+                  {{ inc.title }}
+                </a>
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">
+                  📍 {{ inc.location }}
+                </div>
+              </td>
+              <td>
+                <span style="font-weight: 500;">{{ inc.aircraft_type }}</span>
+              </td>
+              <td>
+                {{ inc.get_category_display }}
+              </td>
+              <td>
+                <span class="badge badge-{{ inc.severity }}">
+                  {{ inc.get_severity_display }}
+                </span>
+              </td>
+              <td>
+                <span class="badge badge-status badge-status-{{ inc.status }}">
+                  {{ inc.get_status_display }}
+                </span>
+              </td>
+              <td style="font-size: 0.86rem; color: #475569;">
+                {{ inc.date_time|date:"M d, Y H:i" }}
+              </td>
+              <td style="font-size: 0.86rem; color: #475569;">
+                {{ inc.reported_by.username }}
+              </td>
+              <td style="text-align: right;">
+                <a href="{% url 'incident_detail' inc.pk %}" class="btn btn-secondary btn-sm">
+                  View
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🛡️</div>
+      <h3 class="empty-title">No Incidents Found</h3>
+      <p class="empty-desc">
+        {% if search_query or category_filter or severity_filter or status_filter %}
+          No records match your active search filters. Try adjusting or clearing your criteria.
+        {% else %}
+          No incidents have been recorded in SkyShield yet. Be the first to file a report.
+        {% endif %}
+      </p>
+      <a href="{% url 'incident_create' %}" class="btn btn-primary">File First Incident</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

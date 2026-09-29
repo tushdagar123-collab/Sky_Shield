@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SkyShield - Aviation Incident Reporting{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'incident_list' %}" class="brand">
+        <span class="brand-icon">✈</span>
+        <span>SkyShield</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li>
+            <a href="{% url 'incident_list' %}" class="nav-link">Incidents</a>
+          </li>
+          <li>
+            <a href="{% url 'incident_create' %}" class="nav-link">Report Incident</a>
+          </li>
+          <li>
+            <a href="/admin/" target="_blank" class="nav-link">Admin</a>
+          </li>
+
+          {% if user.is_authenticated %}
+            <li>
+              <span class="user-badge">
+                <span>Pilot/Reporter:</span> <strong>{{ user.username }}</strong>
+              </span>
+            </li>
+            <li>
+              <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm">Log Out</a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Log In</a>
+            </li>
+            <li>
+              <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Sign Up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="main-wrapper">
+    {% if messages %}
+      <div class="messages-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="nav-container" style="justify-content: center;">
+      <p>&copy; {% now "Y" %} SkyShield Aviation Incident Reporting & Safety Management System.</p>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

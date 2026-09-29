@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Incident | SkyShield{% endblock %}
+
+{% block content %}
+<div style="max-width: 760px; margin: 0 auto;">
+  <div class="page-header">
+    <div>
+      <div style="margin-bottom: 0.5rem;">
+        <a href="{% url 'incident_list' %}" class="btn btn-secondary btn-sm">&larr; Back to Registry</a>
+      </div>
+      <h1 class="page-title">File Aviation Safety Incident</h1>
+      <p class="page-subtitle">Submit details regarding an operational occurrence, hazard, or safety event.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <strong>Incident Report Form</strong>
+      <span style="font-size: 0.85rem; color: #64748b;">Logged under: <strong>{{ user.username }}</strong></span>
+    </div>
+
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-error">
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.title.id_for_label }}">Incident Title *</label>
+          {{ form.title }}
+          {% if form.title.help_text %}
+            <small class="form-help">{{ form.title.help_text }}</small>
+          {% endif %}
+          {% if form.title.errors %}
+            <div class="form-error">{{ form.title.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.date_time.id_for_label }}">Date & Time of Incident *</label>
+            {{ form.date_time }}
+            {% if form.date_time.help_text %}
+              <small class="form-help">{{ form.date_time.help_text }}</small>
+            {% endif %}
+            {% if form.date_time.errors %}
+              <div class="form-error">{{ form.date_time.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ form.location.id_for_label }}">Location / Airspace *</label>
+            {{ form.location }}
+            {% if form.location.help_text %}
+              <small class="form-help">{{ form.location.help_text }}</small>
+            {% endif %}
+            {% if form.location.errors %}
+              <div class="form-error">{{ form.location.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.aircraft_type.id_for_label }}">Aircraft Model / Type *</label>
+            {{ form.aircraft_type }}
+            {% if form.aircraft_type.help_text %}
+              <small class="form-help">{{ form.aircraft_type.help_text }}</small>
+            {% endif %}
+            {% if form.aircraft_type.errors %}
+              <div class="form-error">{{ form.aircraft_type.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ form.category.id_for_label }}">Incident Category *</label>
+            {{ form.category }}
+            {% if form.category.help_text %}
+              <small class="form-help">{{ form.category.help_text }}</small>
+            {% endif %}
+            {% if form.category.errors %}
+              <div class="form-error">{{ form.category.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.severity.id_for_label }}">Severity Level *</label>
+            {{ form.severity }}
+            {% if form.severity.help_text %}
+              <small class="form-help">{{ form.severity.help_text }}</small>
+            {% endif %}
+            {% if form.severity.errors %}
+              <div class="form-error">{{ form.severity.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ form.status.id_for_label }}">Initial Status *</label>
+            {{ form.status }}
+            {% if form.status.help_text %}
+              <small class="form-help">{{ form.status.help_text }}</small>
+            {% endif %}
+            {% if form.status.errors %}
+              <div class="form-error">{{ form.status.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.description.id_for_label }}">Incident Description & Narrative *</label>
+          {{ form.description }}
+          {% if form.description.help_text %}
+            <small class="form-help">{{ form.description.help_text }}</small>
+          {% endif %}
+          {% if form.description.errors %}
+            <div class="form-error">{{ form.description.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <a href="{% url 'incident_list' %}" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Submit Incident Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
