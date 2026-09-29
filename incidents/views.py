@@ -44,6 +44,9 @@ def incident_list(request):
     total_count = Incident.objects.count()
     critical_count = Incident.objects.filter(severity='critical').count()
     active_count = Incident.objects.exclude(status='closed').count()
+    superuser_incidents_count = Incident.objects.filter(
+        Q(reported_by__is_staff=True) | Q(reported_by__is_superuser=True)
+    ).count()
 
     context = {
         'incidents': incidents,
@@ -58,6 +61,7 @@ def incident_list(request):
         'total_count': total_count,
         'critical_count': critical_count,
         'active_count': active_count,
+        'superuser_incidents_count': superuser_incidents_count,
     }
     return render(request, 'incidents/incident_list.html', context)
 

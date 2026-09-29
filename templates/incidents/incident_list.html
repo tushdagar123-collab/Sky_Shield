@@ -1,14 +1,421 @@
 {% extends 'base.html' %}
 
-{% block title %}Incident Registry | SkyShield{% endblock %}
+{% block title %}SkyShield - Global Aviation Safety & Incident Command{% endblock %}
 
 {% block content %}
-<div class="page-header">
+<!-- ==========================================================================
+     3D Tilted 2D World Map Hero Section with Animated Neon Flights
+     ========================================================================== -->
+<section class="world-radar-hero">
+  <!-- Soft Ambient Glow behind tilted map -->
+  <div class="radar-ambient-glow"></div>
+
+  <!-- 3D Perspective Wrapper -->
+  <div class="world-radar-perspective-wrapper">
+    <div class="world-radar-tilt-container">
+      
+      <!-- Top HUD Header -->
+      <div class="radar-hud-header">
+        <div class="hud-live-tag">
+          <span class="live-beacon-dot"></span>
+          <span>SKYSHIELD RADAR • GLOBAL AIRSPACE TELEMETRY</span>
+        </div>
+        <div class="hud-metrics-bar">
+          <span class="hud-pill">Flights Monitored: <strong>8 Live</strong></span>
+          <span class="hud-pill">Radar Status: <strong style="color: #34d399;">Active 24/7</strong></span>
+        </div>
+      </div>
+
+      <!-- High-Tech Stylized SVG World Map with Live Glowing Flight Paths -->
+      <svg class="radar-svg-canvas" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Neon Radial Glow Filter -->
+          <filter id="radar-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <filter id="intense-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="5" result="blur1"/>
+            <feGaussianBlur stdDeviation="2" result="blur2"/>
+            <feMerge>
+              <feMergeNode in="blur1"/>
+              <feMergeNode in="blur2"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <!-- Trajectory Linear Gradients -->
+          <linearGradient id="cyanArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.3"/>
+          </linearGradient>
+
+          <linearGradient id="emeraldArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#34d399" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#34d399" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#34d399" stop-opacity="0.3"/>
+          </linearGradient>
+
+          <linearGradient id="amberArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.3"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Subtle Radar Latitude / Longitude Graticule Grid -->
+        <g stroke="rgba(56, 189, 248, 0.08)" stroke-width="0.75" stroke-dasharray="2 4">
+          <line x1="0" y1="80" x2="1000" y2="80" />
+          <line x1="0" y1="160" x2="1000" y2="160" />
+          <line x1="0" y1="240" x2="1000" y2="240" stroke="rgba(56, 189, 248, 0.16)" />
+          <line x1="0" y1="320" x2="1000" y2="320" />
+          <line x1="0" y1="400" x2="1000" y2="400" />
+
+          <line x1="166" y1="0" x2="166" y2="480" />
+          <line x1="333" y1="0" x2="333" y2="480" />
+          <line x1="500" y1="0" x2="500" y2="480" stroke="rgba(56, 189, 248, 0.16)" />
+          <line x1="666" y1="0" x2="666" y2="480" />
+          <line x1="833" y1="0" x2="833" y2="480" />
+        </g>
+
+        <!-- Concentric Radar Range Circles -->
+        <g fill="none" stroke="rgba(56, 189, 248, 0.07)" stroke-width="0.8">
+          <circle cx="500" cy="240" r="120" />
+          <circle cx="500" cy="240" r="230" stroke-dasharray="4 8" />
+          <circle cx="500" cy="240" r="350" stroke-dasharray="3 6" />
+        </g>
+
+        <!-- World Continents (Stylized Vector Landmasses in Dark Slate with Cyan Borders) -->
+        <g fill="#15243d" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.2" stroke-linejoin="round">
+          <!-- North America -->
+          <path d="M 60,65 L 140,50 L 210,55 L 290,65 L 340,90 L 310,120 L 260,130 L 290,165 L 305,210 L 270,230 L 240,200 L 210,210 L 195,250 L 175,225 L 140,160 L 95,145 L 60,95 Z" />
+          <path d="M 330,40 L 375,45 L 360,75 L 315,65 Z" /><!-- Greenland -->
+
+          <!-- South America -->
+          <path d="M 255,270 L 295,280 L 340,310 L 330,360 L 295,430 L 270,455 L 250,420 L 240,350 L 235,300 Z" />
+
+          <!-- Europe & British Isles -->
+          <path d="M 460,95 L 515,85 L 545,110 L 530,135 L 555,160 L 525,175 L 485,180 L 460,165 L 465,130 L 440,120 Z" />
+          <path d="M 435,115 L 452,110 L 445,135 L 428,138 Z" /><!-- Great Britain -->
+          <path d="M 418,122 L 428,120 L 424,136 L 416,134 Z" /><!-- Ireland -->
+
+          <!-- Africa & Madagascar -->
+          <path d="M 460,195 L 540,190 L 575,230 L 585,275 L 550,345 L 515,405 L 475,370 L 435,280 L 420,225 L 445,200 Z" />
+          <path d="M 590,340 L 605,345 L 595,385 L 580,375 Z" /><!-- Madagascar -->
+
+          <!-- Asia & Middle East -->
+          <path d="M 550,90 L 650,75 L 770,80 L 890,110 L 910,160 L 860,175 L 840,215 L 800,205 L 755,225 L 730,285 L 700,280 L 690,260 L 660,240 L 640,265 L 610,250 L 580,215 L 565,160 L 570,120 Z" />
+          <path d="M 655,215 L 710,225 L 695,280 L 665,255 Z" /><!-- India Subcontinent -->
+          <path d="M 870,165 L 890,180 L 865,220 L 855,195 Z" /><!-- Japan -->
+          <path d="M 720,290 L 760,295 L 810,315 L 800,335 L 735,325 Z" /><!-- Southeast Asia / Indonesia -->
+
+          <!-- Australia & New Zealand -->
+          <path d="M 795,340 L 865,335 L 905,370 L 890,430 L 830,435 L 785,395 Z" />
+          <path d="M 925,410 L 940,415 L 930,445 L 915,435 Z" /><!-- New Zealand -->
+        </g>
+
+        <!-- ==================================================================
+             8 Demo Flight Trajectory Arcs (Neon Curved Paths)
+             ================================================================== -->
+        <g fill="none">
+          <!-- 1. Delhi (685, 220) to London (495, 145) -->
+          <path id="flight-del-lhr" d="M 685,220 Q 580,105 495,145" stroke="rgba(56, 189, 248, 0.25)" stroke-width="3" />
+          <path d="M 685,220 Q 580,105 495,145" stroke="url(#cyanArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 2. London (495, 145) to New York (285, 175) -->
+          <path id="flight-lhr-jfk" d="M 495,145 Q 380,100 285,175" stroke="rgba(56, 189, 248, 0.25)" stroke-width="3" />
+          <path d="M 495,145 Q 380,100 285,175" stroke="url(#cyanArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 3. New York (285, 175) to Tokyo (865, 190) -->
+          <path id="flight-jfk-tyo" d="M 285,175 Q 560,35 865,190" stroke="rgba(52, 211, 153, 0.25)" stroke-width="3" />
+          <path d="M 285,175 Q 560,35 865,190" stroke="url(#emeraldArcGrad)" stroke-width="1.6" stroke-dasharray="6 8" />
+
+          <!-- 4. Dubai (610, 215) to Singapore (745, 275) -->
+          <path id="flight-dxb-sin" d="M 610,215 Q 675,225 745,275" stroke="rgba(56, 189, 248, 0.25)" stroke-width="3" />
+          <path d="M 610,215 Q 675,225 745,275" stroke="url(#cyanArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 5. London (495, 145) to Dubai (610, 215) -->
+          <path id="flight-lhr-dxb" d="M 495,145 Q 550,165 610,215" stroke="rgba(251, 191, 36, 0.25)" stroke-width="3" />
+          <path d="M 495,145 Q 550,165 610,215" stroke="url(#amberArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 6. Delhi (685, 220) to Singapore (745, 275) -->
+          <path id="flight-del-sin" d="M 685,220 Q 720,240 745,275" stroke="rgba(52, 211, 153, 0.25)" stroke-width="3" />
+          <path d="M 685,220 Q 720,240 745,275" stroke="url(#emeraldArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 7. Singapore (745, 275) to Sydney (885, 380) -->
+          <path id="flight-sin-syd" d="M 745,275 Q 820,310 885,380" stroke="rgba(56, 189, 248, 0.25)" stroke-width="3" />
+          <path d="M 745,275 Q 820,310 885,380" stroke="url(#cyanArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+
+          <!-- 8. Tokyo (865, 190) to Sydney (885, 380) -->
+          <path id="flight-tyo-syd" d="M 865,190 Q 890,280 885,380" stroke="rgba(251, 191, 36, 0.25)" stroke-width="3" />
+          <path d="M 865,190 Q 890,280 885,380" stroke="url(#amberArcGrad)" stroke-width="1.6" stroke-dasharray="5 7" />
+        </g>
+
+        <!-- ==================================================================
+             8 Animated Glowing Flight Beacon Dots
+             ================================================================== -->
+        <!-- Flight 1: Delhi -> London (Cyan) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#38bdf8" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="8s" repeatCount="indefinite" path="M 685,220 Q 580,105 495,145" />
+        </g>
+
+        <!-- Flight 2: London -> New York (Cyan) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#38bdf8" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="7.5s" repeatCount="indefinite" path="M 495,145 Q 380,100 285,175" />
+        </g>
+
+        <!-- Flight 3: New York -> Tokyo (Emerald) -->
+        <g filter="url(#intense-glow)">
+          <circle r="5" fill="#34d399" />
+          <circle r="2" fill="#ffffff" />
+          <animateMotion dur="11.5s" repeatCount="indefinite" path="M 285,175 Q 560,35 865,190" />
+        </g>
+
+        <!-- Flight 4: Dubai -> Singapore (Cyan) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#38bdf8" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="6.5s" repeatCount="indefinite" path="M 610,215 Q 675,225 745,275" />
+        </g>
+
+        <!-- Flight 5: London -> Dubai (Amber) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#fbbf24" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="7s" repeatCount="indefinite" path="M 495,145 Q 550,165 610,215" />
+        </g>
+
+        <!-- Flight 6: Delhi -> Singapore (Emerald) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#34d399" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="6s" repeatCount="indefinite" path="M 685,220 Q 720,240 745,275" />
+        </g>
+
+        <!-- Flight 7: Singapore -> Sydney (Cyan) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#38bdf8" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="8.5s" repeatCount="indefinite" path="M 745,275 Q 820,310 885,380" />
+        </g>
+
+        <!-- Flight 8: Tokyo -> Sydney (Amber) -->
+        <g filter="url(#intense-glow)">
+          <circle r="4.5" fill="#fbbf24" />
+          <circle r="1.8" fill="#ffffff" />
+          <animateMotion dur="9s" repeatCount="indefinite" path="M 865,190 Q 890,280 885,380" />
+        </g>
+
+        <!-- ==================================================================
+             Major City Radar Hubs with Concentric Pulsing Waves
+             ================================================================== -->
+        <!-- Delhi (DEL) -->
+        <g transform="translate(685, 220)">
+          <circle r="3" fill="#10b981">
+            <animate attributeName="r" values="3;12" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#10b981" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="-5" fill="#38bdf8" font-size="9" font-weight="700" letter-spacing="0.5">DEL</text>
+        </g>
+
+        <!-- London (LHR) -->
+        <g transform="translate(495, 145)">
+          <circle r="3" fill="#38bdf8">
+            <animate attributeName="r" values="3;12" dur="2.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#38bdf8" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="-5" fill="#38bdf8" font-size="9" font-weight="700" letter-spacing="0.5">LHR</text>
+        </g>
+
+        <!-- New York (JFK) -->
+        <g transform="translate(285, 175)">
+          <circle r="3" fill="#38bdf8">
+            <animate attributeName="r" values="3;12" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#38bdf8" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="-24" y="-5" fill="#38bdf8" font-size="9" font-weight="700" letter-spacing="0.5">JFK</text>
+        </g>
+
+        <!-- Tokyo (TYO) -->
+        <g transform="translate(865, 190)">
+          <circle r="3" fill="#38bdf8">
+            <animate attributeName="r" values="3;12" dur="2.6s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#38bdf8" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="-5" fill="#38bdf8" font-size="9" font-weight="700" letter-spacing="0.5">TYO</text>
+        </g>
+
+        <!-- Dubai (DXB) -->
+        <g transform="translate(610, 215)">
+          <circle r="3" fill="#fbbf24">
+            <animate attributeName="r" values="3;11" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#fbbf24" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="11" fill="#fbbf24" font-size="9" font-weight="700" letter-spacing="0.5">DXB</text>
+        </g>
+
+        <!-- Singapore (SIN) -->
+        <g transform="translate(745, 275)">
+          <circle r="3" fill="#10b981">
+            <animate attributeName="r" values="3;11" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#10b981" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="11" fill="#34d399" font-size="9" font-weight="700" letter-spacing="0.5">SIN</text>
+        </g>
+
+        <!-- Sydney (SYD) -->
+        <g transform="translate(885, 380)">
+          <circle r="3" fill="#38bdf8">
+            <animate attributeName="r" values="3;12" dur="2.7s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.8;0" dur="2.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3.5" fill="#38bdf8" filter="url(#radar-glow)" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="-5" fill="#38bdf8" font-size="9" font-weight="700" letter-spacing="0.5">SYD</text>
+        </g>
+
+        <!-- Paris (CDG) -->
+        <g transform="translate(505, 155)">
+          <circle r="3" fill="#38bdf8" />
+          <circle r="1.5" fill="#ffffff" />
+          <text x="6" y="11" fill="#94a3b8" font-size="8" font-weight="600">CDG</text>
+        </g>
+      </svg>
+
+      <!-- Bottom HUD Footer -->
+      <div class="radar-hud-footer">
+        <div class="radar-hud-legend">
+          <span class="legend-point"><span class="point-dot cyan"></span> Intercontinental Long-Haul</span>
+          <span class="legend-point"><span class="point-dot emerald"></span> Regional Corridors</span>
+        </div>
+        <div>
+          <span>📐 3D Tilt Perspective View • Pure SVG & CSS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subtle Drop Shadow floor under tilted map -->
+  <div class="radar-ground-shadow"></div>
+</section>
+
+<!-- ==========================================================================
+     4 Flashcard-Style Links with Hover Glow (From Hand-Drawn Diagram)
+     ========================================================================== -->
+<section class="flashcards-row-section">
+  <div class="flashcards-grid">
+    
+    <!-- Flashcard 1: Incident Reporting -> Incident List Page -->
+    <a href="#registry" class="flashcard-link flashcard-cyan">
+      <div>
+        <div class="flashcard-top">
+          <div class="flashcard-icon-box">📋</div>
+          <span class="flashcard-badge badge-glow-cyan">{{ total_count }} Logged</span>
+        </div>
+        <div class="flashcard-content">
+          <h3 class="flashcard-title">Incident Reporting</h3>
+          <p class="flashcard-desc">Review, search, and audit all recorded aviation safety occurrences and logs.</p>
+        </div>
+      </div>
+      <div class="flashcard-action">
+        <span>View Incidents</span>
+        <span>&darr;</span>
+      </div>
+    </a>
+
+    <!-- Flashcard 2: Report Incident -> Form Page -->
+    <a href="{% url 'incident_create' %}" class="flashcard-link flashcard-emerald">
+      <div>
+        <div class="flashcard-top">
+          <div class="flashcard-icon-box">✈️</div>
+          <span class="flashcard-badge badge-glow-emerald">New Filing</span>
+        </div>
+        <div class="flashcard-content">
+          <h3 class="flashcard-title">Report New Incident</h3>
+          <p class="flashcard-desc">File a newly observed bird strike, technical malfunction, or weather encounter.</p>
+        </div>
+      </div>
+      <div class="flashcard-action">
+        <span>File Incident</span>
+        <span>&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Flashcard 3: Superuser Reported Incidents -> Filtered Incident List -->
+    <a href="{% url 'incident_list' %}?staff_only=1#registry" class="flashcard-link flashcard-purple">
+      <div>
+        <div class="flashcard-top">
+          <div class="flashcard-icon-box">🛡️</div>
+          <span class="flashcard-badge badge-glow-purple">{{ superuser_incidents_count }} Official</span>
+        </div>
+        <div class="flashcard-content">
+          <h3 class="flashcard-title">Superuser Incidents</h3>
+          <p class="flashcard-desc">Filter high-priority safety audits and reports logged by verified supervisory staff.</p>
+        </div>
+      </div>
+      <div class="flashcard-action">
+        <span>Filter Audits</span>
+        <span>&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Flashcard 4: Admin -> /admin (Staff Only) -->
+    <a href="/admin/" target="_blank" class="flashcard-link flashcard-amber">
+      <div>
+        <div class="flashcard-top">
+          <div class="flashcard-icon-box">⚙️</div>
+          <span class="flashcard-badge badge-glow-amber">Staff Only</span>
+        </div>
+        <div class="flashcard-content">
+          <h3 class="flashcard-title">Admin Console</h3>
+          <p class="flashcard-desc">Access Django administrative portal to manage users, roles, and safety records.</p>
+        </div>
+      </div>
+      <div class="flashcard-action">
+        <span>Open Admin</span>
+        <span>&rarr;</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Aviation Incident Registry (Existing Section Retained & Connected)
+     ========================================================================== -->
+<div id="registry" class="page-header" style="scroll-margin-top: 2rem;">
   <div>
     <h1 class="page-title">Aviation Incident Registry</h1>
     <p class="page-subtitle">Track, investigate, and review flight safety reports across all operations.</p>
   </div>
-  <div>
+  <div style="display: flex; gap: 0.5rem; align-items: center;">
+    {% if staff_only %}
+      <span class="badge badge-status badge-status-under_review" style="font-size: 0.85rem; padding: 0.45rem 0.8rem;">
+        Showing Superuser / Staff Audits Only
+      </span>
+      <a href="{% url 'incident_list' %}#registry" class="btn btn-secondary btn-sm">Show All Incidents</a>
+    {% endif %}
     <a href="{% url 'incident_create' %}" class="btn btn-primary">
       <span>+</span> Report Incident
     </a>
@@ -34,6 +441,9 @@
 <!-- Search & Filtering Toolbar -->
 <div class="toolbar-card">
   <form method="get" class="filter-form">
+    {% if staff_only %}
+      <input type="hidden" name="staff_only" value="1">
+    {% endif %}
     <div>
       <input 
         type="text" 
@@ -70,9 +480,9 @@
     <div>
       <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     </div>
-    {% if search_query or category_filter or severity_filter or status_filter %}
+    {% if search_query or category_filter or severity_filter or status_filter or staff_only %}
       <div>
-        <a href="{% url 'incident_list' %}" class="btn btn-secondary btn-sm">Clear</a>
+        <a href="{% url 'incident_list' %}#registry" class="btn btn-secondary btn-sm">Clear</a>
       </div>
     {% endif %}
   </form>
@@ -82,7 +492,7 @@
 <div class="card">
   <div class="card-header">
     <strong>Showing {{ incidents|length }} Incident{% if incidents|length != 1 %}s{% endif %}</strong>
-    {% if search_query or category_filter or severity_filter or status_filter %}
+    {% if search_query or category_filter or severity_filter or status_filter or staff_only %}
       <span style="font-size: 0.85rem; color: #64748b;">(Filtered results)</span>
     {% endif %}
   </div>
@@ -134,6 +544,9 @@
               </td>
               <td style="font-size: 0.86rem; color: #475569;">
                 {{ inc.reported_by.username }}
+                {% if inc.reported_by.is_staff or inc.reported_by.is_superuser %}
+                  <span class="badge badge-glow-purple" style="font-size: 0.68rem; margin-left: 3px;">Staff</span>
+                {% endif %}
               </td>
               <td style="text-align: right;">
                 <a href="{% url 'incident_detail' inc.pk %}" class="btn btn-secondary btn-sm">
@@ -150,7 +563,7 @@
       <div class="empty-icon">🛡️</div>
       <h3 class="empty-title">No Incidents Found</h3>
       <p class="empty-desc">
-        {% if search_query or category_filter or severity_filter or status_filter %}
+        {% if search_query or category_filter or severity_filter or status_filter or staff_only %}
           No records match your active search filters. Try adjusting or clearing your criteria.
         {% else %}
           No incidents have been recorded in SkyShield yet. Be the first to file a report.

@@ -616,3 +616,342 @@ body {
   text-align: center;
   margin-top: auto;
 }
+
+/* ==========================================================================
+   World Map Radar Hero Section (3D Tilt & Animated Glowing Flights)
+   ========================================================================== */
+.world-radar-hero {
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+
+.radar-ambient-glow {
+  position: absolute;
+  top: 10%;
+  left: 15%;
+  right: 15%;
+  bottom: 15%;
+  background: radial-gradient(ellipse at center, rgba(2, 132, 199, 0.32) 0%, rgba(14, 165, 233, 0.12) 45%, transparent 75%);
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.world-radar-perspective-wrapper {
+  perspective: 1100px;
+  perspective-origin: 50% 30%;
+  position: relative;
+  z-index: 1;
+}
+
+.world-radar-tilt-container {
+  position: relative;
+  background: radial-gradient(ellipse at 50% 45%, #0e1c34 0%, #07101f 65%, #040812 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 18px;
+  transform: rotateX(20deg) scale(0.97);
+  transform-origin: 50% 85%;
+  box-shadow: 
+    0 35px 70px -15px rgba(0, 0, 0, 0.85),
+    0 0 50px -10px rgba(2, 132, 199, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease;
+  overflow: hidden;
+}
+
+.world-radar-tilt-container:hover {
+  transform: rotateX(13deg) scale(0.985);
+  box-shadow: 
+    0 40px 80px -15px rgba(0, 0, 0, 0.92),
+    0 0 70px -5px rgba(56, 189, 248, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.radar-ground-shadow {
+  position: absolute;
+  bottom: -22px;
+  left: 6%;
+  right: 6%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 75%);
+  filter: blur(14px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Radar HUD Overlays */
+.radar-hud-header {
+  position: absolute;
+  top: 1rem;
+  left: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.06em;
+  backdrop-filter: blur(8px);
+}
+
+.live-beacon-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: beaconPulse 1.8s infinite;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 4px #10b981; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #34d399; }
+  100% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 4px #10b981; }
+}
+
+.hud-metrics-bar {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.hud-pill {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  color: #cbd5e1;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+}
+
+.hud-pill strong {
+  color: #38bdf8;
+}
+
+.radar-hud-footer {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.radar-hud-legend {
+  display: flex;
+  gap: 1rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+}
+
+.legend-point {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.point-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.point-dot.cyan { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
+.point-dot.emerald { background: #10b981; box-shadow: 0 0 6px #10b981; }
+
+.radar-svg-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==========================================================================
+   Homepage Flashcards Navigation Grid (4 Cards with Hover Glow)
+   ========================================================================== */
+.flashcards-row-section {
+  margin: 1.5rem 0 2.75rem;
+}
+
+.flashcards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.15rem;
+}
+
+@media (max-width: 1024px) {
+  .flashcards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .flashcards-grid {
+    grid-template-columns: 1fr;
+  }
+  .radar-hud-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .radar-hud-footer {
+    display: none;
+  }
+}
+
+.flashcard-link {
+  position: relative;
+  background: linear-gradient(145deg, #0f172a 0%, #152238 100%);
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.25rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 190px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.26s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.26s ease;
+}
+
+.flashcard-link:hover {
+  transform: translateY(-6px);
+}
+
+/* 4 Distinct Neon Glow Accents */
+.flashcard-cyan:hover {
+  border-color: rgba(56, 189, 248, 0.7);
+  box-shadow: 0 16px 32px -8px rgba(2, 132, 199, 0.35),
+              0 0 24px rgba(56, 189, 248, 0.3);
+}
+
+.flashcard-emerald:hover {
+  border-color: rgba(52, 211, 153, 0.7);
+  box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.35),
+              0 0 24px rgba(52, 211, 153, 0.3);
+}
+
+.flashcard-purple:hover {
+  border-color: rgba(192, 132, 252, 0.7);
+  box-shadow: 0 16px 32px -8px rgba(147, 51, 234, 0.35),
+              0 0 24px rgba(192, 132, 252, 0.3);
+}
+
+.flashcard-amber:hover {
+  border-color: rgba(251, 191, 36, 0.7);
+  box-shadow: 0 16px 32px -8px rgba(217, 119, 6, 0.35),
+              0 0 24px rgba(251, 191, 36, 0.3);
+}
+
+.flashcard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.flashcard-icon-box {
+  width: 40px;
+  height: 40px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.flashcard-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.badge-glow-cyan {
+  background: rgba(2, 132, 199, 0.2);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.badge-glow-emerald {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.badge-glow-purple {
+  background: rgba(147, 51, 234, 0.2);
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+.badge-glow-amber {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.flashcard-content {
+  margin-bottom: 0.95rem;
+}
+
+.flashcard-title {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.35rem;
+}
+
+.flashcard-desc {
+  color: #94a3b8;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.flashcard-action {
+  font-size: 0.84rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: transform 0.2s ease;
+}
+
+.flashcard-cyan .flashcard-action { color: #38bdf8; }
+.flashcard-emerald .flashcard-action { color: #34d399; }
+.flashcard-purple .flashcard-action { color: #c084fc; }
+.flashcard-amber .flashcard-action { color: #fbbf24; }
+
+.flashcard-link:hover .flashcard-action {
+  transform: translateX(4px);
+}

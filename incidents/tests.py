@@ -53,6 +53,16 @@ class SkyShieldTests(TestCase):
         self.assertContains(response, 'Dual Engine Bird Ingestion')
         self.assertContains(response, 'Airbus A320')
         self.assertTemplateUsed(response, 'incidents/incident_list.html')
+        # Check 3D tilted world map and animated flight elements
+        self.assertContains(response, 'world-radar-hero')
+        self.assertContains(response, 'world-radar-tilt-container')
+        self.assertContains(response, 'radar-svg-canvas')
+        self.assertContains(response, 'flight-del-lhr')
+        # Check 4 flashcards
+        self.assertContains(response, 'Incident Reporting')
+        self.assertContains(response, 'Report New Incident')
+        self.assertContains(response, 'Superuser Incidents')
+        self.assertContains(response, 'Admin Console')
 
     def test_incident_list_filtering(self):
         # Filter by category
