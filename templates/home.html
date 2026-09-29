@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SkyShield - 3D Aviation Safety & Global Flight Operations{% endblock %}
+
+{% block extra_head %}
+<!-- Three.js and Globe.gl from CDN -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script src="https://unpkg.com/globe.gl@2.32.0/dist/globe.gl.min.js"></script>
+{% endblock %}
+
+{% block hero %}
+<!-- 3D Interactive Globe Hero Section -->
+<section class="globe-hero-section">
+  <!-- HUD Header Overlay -->
+  <div class="globe-hud-overlay">
+    <div class="hud-top-bar">
+      <div class="hud-brand-pill">
+        <span class="live-dot-pulse"></span>
+        <span class="hud-brand-text">GLOBAL AIRSPACE TELEMETRY SIMULATION</span>
+      </div>
+      <div class="hud-metrics">
+        <span class="hud-stat-pill"><strong>7</strong> Active Transponder Feeds</span>
+        <span class="hud-stat-pill status-live"><strong>SYS:</strong> NORMAL</span>
+      </div>
+    </div>
+
+    <div class="hud-title-wrap">
+      <h1 class="hud-main-title">Aviation Safety & Flight Incident Management</h1>
+      <p class="hud-sub-title">Interactive 3D real-time surveillance radar, incident logging, and fleet safety analytics.</p>
+    </div>
+  </div>
+
+  <!-- Interactive 3D WebGL Canvas Container -->
+  <div id="globe-container" class="globe-canvas-wrapper"></div>
+
+  <!-- Interactive Instructions & Flight Legend -->
+  <div class="globe-footer-hud">
+    <div class="hud-legend">
+      <span class="legend-item"><span class="legend-dot cyan"></span> Intercontinental Flight Arcs</span>
+      <span class="legend-item"><span class="legend-dot green"></span> Active Airport Hubs</span>
+    </div>
+    <div class="hud-controls-hint">
+      <span>🖱️ Click & Drag to Rotate Globe | Scroll to Zoom</span>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Quick Access Flashcards Section -->
+<section class="dashboard-cards-section">
+  <div class="section-heading-wrap">
+    <div>
+      <h2 class="section-title">Operations Command Center</h2>
+      <p class="section-subtitle">Quick-access flight safety consoles, incident registers, and administrative tools.</p>
+    </div>
+    <div>
+      <a href="{% url 'incident_create' %}" class="btn btn-primary">
+        <span>+</span> Report New Incident
+      </a>
+    </div>
+  </div>
+
+  <div class="flashcards-grid">
+    <!-- Card 1: Incident Reporting -->
+    <a href="{% url 'incident_list' %}" class="flashcard">
+      <div class="flashcard-glow"></div>
+      <div class="flashcard-top">
+        <div class="flashcard-icon-box">📋</div>
+        <span class="flashcard-badge badge-cyan">{{ total_count }} Recorded</span>
+      </div>
+      <div class="flashcard-body">
+        <h3 class="flashcard-title">Incident Reporting</h3>
+        <p class="flashcard-desc">
+          Browse the full incident registry, search flight safety records, and filter occurrences by category, severity, and status.
+        </p>
+      </div>
+      <div class="flashcard-footer">
+        <span class="flashcard-action">Open Registry &rarr;</span>
+      </div>
+    </a>
+
+    <!-- Card 2: Planes (Fleet Inventory Placeholder) -->
+    <a href="{% url 'planes_placeholder' %}" class="flashcard">
+      <div class="flashcard-glow"></div>
+      <div class="flashcard-top">
+        <div class="flashcard-icon-box">✈️</div>
+        <span class="flashcard-badge badge-amber">Fleet Telemetry</span>
+      </div>
+      <div class="flashcard-body">
+        <h3 class="flashcard-title">Planes & Aircraft</h3>
+        <p class="flashcard-desc">
+          Airframe profiles, aircraft registration metrics, engine cycle surveillance, and upcoming fleet maintenance logs.
+        </p>
+      </div>
+      <div class="flashcard-footer">
+        <span class="flashcard-action">View Airframes &rarr;</span>
+      </div>
+    </a>
+
+    <!-- Card 3: Admin Console (Only visible to Staff Users) -->
+    {% if user.is_staff %}
+    <a href="/admin/" target="_blank" class="flashcard staff-card">
+      <div class="flashcard-glow"></div>
+      <div class="flashcard-top">
+        <div class="flashcard-icon-box">⚙️</div>
+        <span class="flashcard-badge badge-purple">Staff Only</span>
+      </div>
+      <div class="flashcard-body">
+        <h3 class="flashcard-title">Admin Console</h3>
+        <p class="flashcard-desc">
+          Full administrative command to audit incident logs, manage reporter privileges, and configure Django system settings.
+        </p>
+      </div>
+      <div class="flashcard-footer">
+        <span class="flashcard-action">Launch Admin &rarr;</span>
+      </div>
+    </a>
+    {% endif %}
+
+    <!-- Card 4: Superuser Reported Incidents -->
+    <a href="{% url 'incident_list' %}?staff_only=1" class="flashcard">
+      <div class="flashcard-glow"></div>
+      <div class="flashcard-top">
+        <div class="flashcard-icon-box">🛡️</div>
+        <span class="flashcard-badge badge-emerald">{{ superuser_incidents_count }} Audited</span>
+      </div>
+      <div class="flashcard-body">
+        <h3 class="flashcard-title">Superuser Reported Incidents</h3>
+        <p class="flashcard-desc">
+          Filter and review high-priority incidents and formal safety investigations filed or supervised by system administrators.
+        </p>
+      </div>
+      <div class="flashcard-footer">
+        <span class="flashcard-action">View Staff Reports &rarr;</span>
+      </div>
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('globe-container');
+    if (!container || typeof Globe === 'undefined') {
+      console.warn('Globe.GL container or library missing');
+      return;
+    }
+
+    // 7 Sample Realistic Long-Haul Flight Routes
+    const sampleFlights = [
+      {
+        from: 'DEL', fromName: 'Delhi (DEL)',
+        to: 'LHR', toName: 'London (LHR)',
+        startLat: 28.5562, startLng: 77.1000,
+        endLat: 51.4700, endLng: -0.4543,
+        flightNo: 'AI-161 (B777-300ER)',
+        order: 0
+      },
+      {
+        from: 'JFK', fromName: 'New York (JFK)',
+        to: 'HND', toName: 'Tokyo (HND)',
+        startLat: 40.6413, startLng: -73.7781,
+        endLat: 35.5494, endLng: 139.7798,
+        flightNo: 'JL-005 (A350-1000)',
+        order: 1
+      },
+      {
+        from: 'DXB', fromName: 'Dubai (DXB)',
+        to: 'SIN', toName: 'Singapore (SIN)',
+        startLat: 25.2532, startLng: 55.3657,
+        endLat: 1.3644, endLng: 103.9915,
+        flightNo: 'EK-354 (A380-800)',
+        order: 2
+      },
+      {
+        from: 'SFO', fromName: 'San Francisco (SFO)',
+        to: 'SYD', toName: 'Sydney (SYD)',
+        startLat: 37.6213, startLng: -122.3790,
+        endLat: -33.9399, endLng: 151.1753,
+        flightNo: 'UA-863 (B787-9)',
+        order: 3
+      },
+      {
+        from: 'CDG', fromName: 'Paris (CDG)',
+        to: 'JNB', toName: 'Johannesburg (JNB)',
+        startLat: 49.0097, startLng: 2.5479,
+        endLat: -26.1367, endLng: 28.2411,
+        flightNo: 'AF-990 (B777-200ER)',
+        order: 4
+      },
+      {
+        from: 'LAX', fromName: 'Los Angeles (LAX)',
+        to: 'ICN', toName: 'Seoul (ICN)',
+        startLat: 33.9416, startLng: -118.4085,
+        endLat: 37.4602, endLng: 126.4407,
+        flightNo: 'KE-012 (B747-8i)',
+        order: 5
+      },
+      {
+        from: 'FRA', fromName: 'Frankfurt (FRA)',
+        to: 'GRU', toName: 'São Paulo (GRU)',
+        startLat: 50.0379, startLng: 8.5622,
+        endLat: -23.4356, endLng: -46.4731,
+        flightNo: 'LH-506 (B747-8i)',
+        order: 6
+      }
+    ];
+
+    // Unique Airport City Hubs for Glowing Markers
+    const airportsMap = new Map();
+    sampleFlights.forEach(f => {
+      airportsMap.set(f.from, { name: f.fromName, lat: f.startLat, lng: f.startLng });
+      airportsMap.set(f.to, { name: f.toName, lat: f.endLat, lng: f.endLng });
+    });
+    const airportsData = Array.from(airportsMap.values());
+
+    // Compute dimensions
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || 560;
+
+    // Initialize 3D Globe with Globe.GL
+    const globe = Globe()(container)
+      .width(width)
+      .height(height)
+      .globeImageUrl('https://unpkg.com/three-globe@2.32.0/example/img/earth-night.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe@2.32.0/example/img/earth-topology.png')
+      .backgroundColor('rgba(0, 0, 0, 0)')
+      .atmosphereColor('#0ea5e9')
+      .atmosphereAltitude(0.18)
+
+      // Arcs for Flight Routes with Glowing Gradient & Moving Pulse
+      .arcsData(sampleFlights)
+      .arcColor(d => ['rgba(14, 165, 233, 0.25)', 'rgba(56, 189, 248, 0.95)', 'rgba(14, 165, 233, 0.25)'])
+      .arcAltitude(0.24)
+      .arcStroke(1.4)
+      .arcDashLength(0.26)
+      .arcDashGap(1)
+      .arcDashInitialGap(d => (d.order * 0.16) % 1)
+      .arcDashAnimateTime(3600)
+      .arcLabel(d => `✈ ${d.flightNo}<br/>${d.fromName} &rarr; ${d.toName}`)
+
+      // Airport Hub Glowing Points
+      .pointsData(airportsData)
+      .pointColor(() => '#38bdf8')
+      .pointAltitude(0.015)
+      .pointRadius(0.55)
+      .pointLabel(d => `📍 ${d.name}`)
+
+      // Airport Pulsing Radar Rings
+      .ringsData(airportsData)
+      .ringColor(() => t => `rgba(56, 189, 248, ${Math.max(0, 0.85 - t)})`)
+      .ringMaxRadius(3.0)
+      .ringPropagationSpeed(1.4)
+      .ringRepeatPeriod(1500);
+
+    // Initial View Position centered around mid-airspace
+    globe.pointOfView({ lat: 24, lng: 45, altitude: 2.3 }, 0);
+
+    // Enable Smooth Auto-Rotation & Interaction
+    const controls = globe.controls();
+    if (controls) {
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.5;
+      controls.enableZoom = true;
+      controls.minDistance = 140;
+      controls.maxDistance = 550;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+    }
+
+    // Responsive Canvas Resize Handler
+    window.addEventListener('resize', () => {
+      if (container) {
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight || 560;
+        globe.width(newWidth).height(newHeight);
+      }
+    });
+  });
+</script>
+{% endblock %}

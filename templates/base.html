@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}SkyShield - Aviation Incident Reporting{% endblock %}</title>
+  <title>{% block title %}SkyShield - Aviation Incident Reporting & Safety Management{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block extra_head %}{% endblock %}
 </head>
@@ -12,7 +12,7 @@
   <!-- Navigation Header -->
   <header class="navbar">
     <div class="nav-container">
-      <a href="{% url 'incident_list' %}" class="brand">
+      <a href="{% url 'home' %}" class="brand">
         <span class="brand-icon">✈</span>
         <span>SkyShield</span>
       </a>
@@ -20,14 +20,22 @@
       <nav>
         <ul class="nav-links">
           <li>
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+          </li>
+          <li>
             <a href="{% url 'incident_list' %}" class="nav-link">Incidents</a>
+          </li>
+          <li>
+            <a href="{% url 'planes_placeholder' %}" class="nav-link">Planes</a>
           </li>
           <li>
             <a href="{% url 'incident_create' %}" class="nav-link">Report Incident</a>
           </li>
-          <li>
-            <a href="/admin/" target="_blank" class="nav-link">Admin</a>
-          </li>
+          {% if user.is_staff %}
+            <li>
+              <a href="/admin/" target="_blank" class="nav-link">Admin</a>
+            </li>
+          {% endif %}
 
           {% if user.is_authenticated %}
             <li>
@@ -50,6 +58,9 @@
       </nav>
     </div>
   </header>
+
+  <!-- Full Width Hero Section (For 3D Globe on Homepage) -->
+  {% block hero %}{% endblock %}
 
   <!-- Main Body Content -->
   <main class="main-wrapper">

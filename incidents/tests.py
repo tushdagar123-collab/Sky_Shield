@@ -13,6 +13,12 @@ class SkyShieldTests(TestCase):
             email='sully@skyshield.aero',
             password='TestPassword123!'
         )
+        self.staff_user = User.objects.create_user(
+            username='admin_officer',
+            email='admin@skyshield.aero',
+            password='AdminPassword123!',
+            is_staff=True
+        )
         self.incident = Incident.objects.create(
             title='Dual Engine Bird Ingestion',
             description='Flock of Canadian geese collided with engines during climbout.',
@@ -24,11 +30,48 @@ class SkyShieldTests(TestCase):
             status=Incident.STATUS_INVESTIGATING,
             reported_by=self.user
         )
+        self.staff_incident = Incident.objects.create(
+            title='Runway Incursion Safety Audit',
+            description='Supervisory investigation of runway 28L crossing without authorization.',
+            date_time=timezone.now(),
+            location='SFO / San Francisco',
+            aircraft_type='Boeing 787-9',
+            category=Incident.CATEGORY_HUMAN_ERROR,
+            severity=Incident.SEVERITY_HIGH,
+            status=Incident.STATUS_UNDER_REVIEW,
+            reported_by=self.staff_user
+        )
 
     def test_incident_model_str(self):
         self.assertIn('Critical', str(self.incident))
         self.assertIn('Dual Engine Bird Ingestion', str(self.incident))
         self.assertIn('Airbus A320', str(self.incident))
+
+    def test_homepage_view(self):
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        self.assertContains(response, 'globe-container')
+        self.assertContains(response, 'Operations Command Center')
+        self.assertContains(response, 'Incident Reporting')
+        self.assertContains(response, 'Planes & Aircraft')
+        self.assertContains(response, 'Superuser Reported Incidents')
+
+    def test_homepage_staff_card_visibility(self):
+        # Non-staff user should NOT see Admin Console card
+        res_anon = self.client.get(reverse('home'))
+        self.assertNotContains(res_anon, 'Launch Admin &rarr;')
+
+        # Staff user SHOULD see Admin Console card
+        self.client.login(username='admin_officer', password='AdminPassword123!')
+        res_staff = self.client.get(reverse('home'))
+        self.assertContains(res_staff, 'Launch Admin &rarr;')
+
+    def test_planes_placeholder_view(self):
+        response = self.client.get(reverse('planes_placeholder'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'incidents/planes.html')
+        self.assertContains(response, 'Aircraft Fleet Registry')
 
     def test_incident_list_view(self):
         response = self.client.get(reverse('incident_list'))
@@ -45,6 +88,12 @@ class SkyShieldTests(TestCase):
         # Filter by non-matching category
         res2 = self.client.get(reverse('incident_list'), {'category': 'weather'})
         self.assertEqual(len(res2.context['incidents']), 0)
+
+    def test_incident_list_staff_only_filtering(self):
+        # Filter by staff/superuser only
+        res = self.client.get(reverse('incident_list'), {'staff_only': '1'})
+        self.assertEqual(len(res.context['incidents']), 1)
+        self.assertEqual(res.context['incidents'][0].title, 'Runway Incursion Safety Audit')
 
     def test_incident_detail_view(self):
         response = self.client.get(reverse('incident_detail', kwargs={'pk': self.incident.pk}))

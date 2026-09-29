@@ -7,6 +7,29 @@ from .models import Incident
 from .forms import IncidentForm, UserRegisterForm
 
 
+def home(request):
+    """Homepage featuring 3D interactive flight tracking globe and dashboard flashcards."""
+    total_count = Incident.objects.count()
+    critical_count = Incident.objects.filter(severity='critical').count()
+    active_count = Incident.objects.exclude(status='closed').count()
+    superuser_incidents_count = Incident.objects.filter(
+        Q(reported_by__is_staff=True) | Q(reported_by__is_superuser=True)
+    ).count()
+
+    context = {
+        'total_count': total_count,
+        'critical_count': critical_count,
+        'active_count': active_count,
+        'superuser_incidents_count': superuser_incidents_count,
+    }
+    return render(request, 'home.html', context)
+
+
+def planes_placeholder(request):
+    """Placeholder page for the aircraft fleet management module."""
+    return render(request, 'incidents/planes.html')
+
+
 def incident_list(request):
     """List page showing all incidents with optional search and filters."""
     incidents = Incident.objects.select_related('reported_by').all()
@@ -16,6 +39,7 @@ def incident_list(request):
     category_filter = request.GET.get('category', '').strip()
     severity_filter = request.GET.get('severity', '').strip()
     status_filter = request.GET.get('status', '').strip()
+    staff_only = request.GET.get('staff_only', '').strip()
 
     if search_query:
         incidents = incidents.filter(
@@ -34,6 +58,11 @@ def incident_list(request):
     if status_filter:
         incidents = incidents.filter(status=status_filter)
 
+    if staff_only in ('1', 'true', 'True'):
+        incidents = incidents.filter(
+            Q(reported_by__is_staff=True) | Q(reported_by__is_superuser=True)
+        )
+
     # Metrics
     total_count = Incident.objects.count()
     critical_count = Incident.objects.filter(severity='critical').count()
@@ -45,6 +74,7 @@ def incident_list(request):
         'category_filter': category_filter,
         'severity_filter': severity_filter,
         'status_filter': status_filter,
+        'staff_only': staff_only in ('1', 'true', 'True'),
         'categories': Incident.CATEGORY_CHOICES,
         'severities': Incident.SEVERITY_CHOICES,
         'statuses': Incident.STATUS_CHOICES,
