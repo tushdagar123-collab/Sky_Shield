@@ -47,32 +47,6 @@ class SkyShieldTests(TestCase):
         self.assertIn('Dual Engine Bird Ingestion', str(self.incident))
         self.assertIn('Airbus A320', str(self.incident))
 
-    def test_homepage_view(self):
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'home.html')
-        self.assertContains(response, 'globe-container')
-        self.assertContains(response, 'Operations Command Center')
-        self.assertContains(response, 'Incident Reporting')
-        self.assertContains(response, 'Planes & Aircraft')
-        self.assertContains(response, 'Superuser Reported Incidents')
-
-    def test_homepage_staff_card_visibility(self):
-        # Non-staff user should NOT see Admin Console card
-        res_anon = self.client.get(reverse('home'))
-        self.assertNotContains(res_anon, 'Launch Admin &rarr;')
-
-        # Staff user SHOULD see Admin Console card
-        self.client.login(username='admin_officer', password='AdminPassword123!')
-        res_staff = self.client.get(reverse('home'))
-        self.assertContains(res_staff, 'Launch Admin &rarr;')
-
-    def test_planes_placeholder_view(self):
-        response = self.client.get(reverse('planes_placeholder'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'incidents/planes.html')
-        self.assertContains(response, 'Aircraft Fleet Registry')
-
     def test_incident_list_view(self):
         response = self.client.get(reverse('incident_list'))
         self.assertEqual(response.status_code, 200)

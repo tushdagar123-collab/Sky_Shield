@@ -7,29 +7,6 @@ from .models import Incident
 from .forms import IncidentForm, UserRegisterForm
 
 
-def home(request):
-    """Homepage featuring 3D interactive flight tracking globe and dashboard flashcards."""
-    total_count = Incident.objects.count()
-    critical_count = Incident.objects.filter(severity='critical').count()
-    active_count = Incident.objects.exclude(status='closed').count()
-    superuser_incidents_count = Incident.objects.filter(
-        Q(reported_by__is_staff=True) | Q(reported_by__is_superuser=True)
-    ).count()
-
-    context = {
-        'total_count': total_count,
-        'critical_count': critical_count,
-        'active_count': active_count,
-        'superuser_incidents_count': superuser_incidents_count,
-    }
-    return render(request, 'home.html', context)
-
-
-def planes_placeholder(request):
-    """Placeholder page for the aircraft fleet management module."""
-    return render(request, 'incidents/planes.html')
-
-
 def incident_list(request):
     """List page showing all incidents with optional search and filters."""
     incidents = Incident.objects.select_related('reported_by').all()
